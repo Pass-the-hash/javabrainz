@@ -37,29 +37,24 @@ public class APIWrapper {
     }
     
     public static void artistDeserialize() throws IOException{
-        String results=getResponse("http://musicbrainz.org/ws/2/release/?query=" + "dynasty" + "&fmt=json");
+        String results=getResponse("http://musicbrainz.org/ws/2/release-group/?query=" + "muse_in_arms" + "&fmt=json");
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
-        //int i=5;
-        List p=JsonPath.using(conf).parse(results).read("$.releases[*].media");
+        int i=2;
+        List p=JsonPath.using(conf).parse(results).read("$.release-groups["+i+"].artist-credit[*].artist.id");
         List test;
-        for (int j=0; j<p.size(); j++){
+        /*for (int j=0; j<p.size(); j++){
             test=null;
             //if (p.get(j)!=null) test=(String) p.get(j);
             if(p.get(j)!=null) test=JsonPath.using(conf).parse(results).read("$.releases["+j+"].media[*].format");
             System.out.println(p.get(j));
             System.out.println(test);
             
-        }
-        //System.out.println(p.size());
-        //System.out.println(test.size());
+        }*/
+        System.out.println(p);
+        System.out.println(p.size());
     }
     
-    /* public static ReleaseDeserializer releaseDeserialize(String json){
-        Gson gson = new Gson();
-        return gson.fromJson(json, ReleaseDeserializer.class);
-    }*/
-    
-    public static ArrayList<Artist> genericArtistRequest(String u) throws IOException{
+    public static ArrayList<Artist> getArtists(String u) throws IOException{
         String response = getResponse(u);
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         
@@ -79,7 +74,6 @@ public class APIWrapper {
             country=null; city=null;
             if (aliascheck.get(i)!=null){ aliases=JsonPath.parse(response).read("$.artists["+i+"].aliases[*].name"); for (int j=0; j<aliases.size(); j++) alias.add(aliases.get(j));}
             if (tagscheck.get(i)!=null){ tags=JsonPath.parse(response).read("$.artists["+i+"].tags[*].name"); for (int j=0; j<tags.size(); j++) tag.add(tags.get(j));}
-            System.out.println(requests);
             if (area.get(i)!=null) country=JsonPath.parse(area.get(i)).read("$.name");
             if (begin_area.get(i)!=null) city=JsonPath.parse(begin_area.get(i)).read("$.name");
             begin=(String) begins.get(i);
@@ -100,7 +94,7 @@ public class APIWrapper {
         return artists;
     }
 
-    private static ArrayList<Release> genericReleaseRequest(String u) throws IOException {
+    private static ArrayList<Release> getReleases(String u) throws IOException {
         String response = getResponse(u);
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         ArrayList<Release> releases=new ArrayList();
@@ -109,75 +103,58 @@ public class APIWrapper {
         List<String> dates=JsonPath.using(conf).parse(response).read("$.releases[*].date");
         List<String> list;
         List media=JsonPath.using(conf).parse(response).read("$.releases[*].media");
-        List<Integer >tracks=JsonPath.using(conf).parse(response).read("$.releases[*].track-count");
-        String date = null, language;
+        List<Integer> tracks=JsonPath.using(conf).parse(response).read("$.releases[*].track-count");
+        String language;
         String[] format;
         for (int i=0; i<ids.size(); i++) {
             format=null;
-            //System.out.println(media.get(i));
             language=null; format=new String[5];
             language=JsonPath.using(conf).parse(response).read("$.releases["+i+"].text-representation.language");
             if (media.get(i)!=null){list=JsonPath.using(conf).parse(response).read("$.releases["+i+"].media[*].format"); format=new String[5]; for (int j=0; j<list.size()&&j<5; j++) format[j]=list.get(j);}
-            if (dates.get(i)!=null) date=(String) dates.get(i);
             if (dates.get(i)!=null && CheckDate(dates.get(i))==2) releases.add(new Release(titles.get(i), language, format, statuses.get(i), LocalDate.parse(dates.get(i)), tracks.get(i), ids.get(i)));
             else releases.add(new Release((String)titles.get(i), language, format, statuses.get(i), null, tracks.get(i), ids.get(i)));
         }
         return releases;
     }
     
-    /*private static ArrayList genericAlbumRequest(String u) throws IOException{
+    private static ArrayList<Album> getAlbums(String u) throws IOException{
         String response = getResponse(u);
         ArrayList albums=new ArrayList();
-        //ArrayList compilations=new ArrayList();
-        ArrayList<Artist> artist_arr;
-        LinkedList<Artist> artists=new LinkedList();
-        String title, status, id;
-        long track;
-        Genson genson=new GensonBuilder().useRuntimeType(true).create();
-        Map<String, ArrayList> json = genson.deserialize(response, Map.class);
-        ArrayList<HashMap> releases=json.get("release-groups");
-        ArrayList<HashMap> secondary, credit, release;
-        HashMap artist_id;
-        String type;
-        for (int i=0; i<releases.size(); i++){
-            track=(long) releases.get(i).get("count");
-            id=(String) releases.get(i).get("id");
-            title=(String) releases.get(i).get("title");
-            release=(ArrayList) releases.get(i).get("releases");
-            status=(String) release.get(0).get("status");
-            if (releases.get(i).get("secondary-types") != null) {
-                secondary = (ArrayList) releases.get(i).get("secondary-types");
-                HashMap index = (HashMap) secondary.get(0);
-                type = (String) index.get(0);
-                if (type.equals("Compilation")){
-                    credit=(ArrayList) releases.get(i).get("artist-credit");
-                    artist_id=(HashMap) credit.get(0).get("artist");
-                    artist_arr=APIWrapper.genericArtistRequest("http://musicbrainz.org/ws/2/artist/"+ artist_id.get("id") +"?inc=aliases&fmt=json");
-                    for (Artist j: artist_arr){
-                        artists.add(j);
-                    }
-                    albums.add(new Compilation(artists, title, null, null, status, null, (int) track, id));
-                }
-            } else{
-                credit = (ArrayList) releases.get(i).get("artist-credit");
-                artist_id = (HashMap) credit.get(0).get("artist");
-                artist_arr = APIWrapper.genericArtistRequest("http://musicbrainz.org/ws/2/artist/" + artist_id.get("id") + "?inc=aliases&fmt=json");
-                for (Artist j : artist_arr) {
-                    artists.add(j);
-                }
-                albums.add(new Album(artists.get(0), title, null, null, status, null, (int) track, id));
-            }
+        ArrayList<Artist> artists;
+        
+        Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
+        List<String> titles=JsonPath.read(response, "$.release-groups[*].title"), ids=JsonPath.read(response, "$.release-groups[*].id"), artist_ids=JsonPath.using(conf).parse(response).read("$.release-groups[*].artist-credit[0].artist.id");;
+        List compilations=JsonPath.using(conf).parse(response).read("$.release-groups[*].secondary-types");
+        
+        for (int i=0; i<ids.size(); i++){
+            if (compilations.get(i)!=null) continue;
+                //artists = APIWrapper.getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + artist_ids.get(i) + "&fmt=json");
+                albums.add(new Album(null, titles.get(i), null, ids.get(i)));
         }
         return albums;
-    }*/
-    
-    static String urlEncodeUTF8(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new UnsupportedOperationException(e);
-        }
     }
+    
+    private static ArrayList<Compilation> getCompilations(String u) throws IOException{
+        String response = getResponse(u);
+        ArrayList<Compilation> compilations=new ArrayList();
+        ArrayList<Artist> artists=new ArrayList();
+        ArrayList<Artist> tmp;
+        
+        Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
+        List<String> titles=JsonPath.read(response, "$.release-groups[*].title"), ids=JsonPath.read(response, "$.release-groups[*].id"), artist_ids;
+        
+        for (int i=0; i<ids.size(); i++){
+            /*artist_ids=JsonPath.using(conf).parse(response).read("$.release-groups["+i+"].artist-credit[*].artist.id");
+            System.out.println(i);
+            tmp=getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + artist_ids.get(i) + "&fmt=json");
+            for (Artist obj:tmp){
+                artists.add(obj);
+            }*/
+            compilations.add(new Compilation(null, titles.get(i), null, ids.get(i)));
+        }
+        return compilations;
+    }
+    
     
     private static LinkedList<String> populateRelations(String id) throws IOException{ //member gathering
         String url = "https://musicbrainz.org/ws/2/artist/"+ id +"?inc=artist-rels&fmt=json";
@@ -190,35 +167,36 @@ public class APIWrapper {
         }
         return members;
     }
-    /*public static ArrayList<Album> getAlbums(String index) throws IOException{
+    
+    public static ArrayList<Album> getAlbumsWithName(String index) throws IOException{
 
         //String encoded  = urlEncodeUTF8(hmap);
         String u = "http://musicbrainz.org/ws/2/release-group/?query=" + index + "&fmt=json";
 
-        return genericAlbumRequest(u);
-    }*/
+        return getAlbums(u);
+    }
     
-    public static ArrayList<Artist> getArtists(String index) throws IOException{
+    public static ArrayList<Artist> getArtistsWithName(String index) throws IOException{
 
         //String encoded  = urlEncodeUTF8(hmap);
         String u = "http://musicbrainz.org/ws/2/artist/?query=" + index + "&fmt=json";
 
-        return genericArtistRequest(u);
+        return getArtists(u);
         
     }
     
-    public static ArrayList<Release> getReleases(String index) throws IOException {
+    public static ArrayList<Release> getReleasesWithName(String index) throws IOException {
 
         //String encoded = urlEncodeUTF8(hmap);
         String u = "http://musicbrainz.org/ws/2/release/?query=" + index + "&fmt=json";
 
-        return genericReleaseRequest(u);
+        return getReleases(u);
     }
     
-    /*public static ArrayList<Compilation> getCompilations(String index) throws IOException{
+    public static ArrayList<Compilation> getCompilationsWithName(String index) throws IOException{
         //String encoded  = urlEncodeUTF8(hmap);
         String u = "http://musicbrainz.org/ws/2/release-group/?query=" + index + "%20AND%20secondarytype:compilation&fmt=json";
 
-        return genericAlbumRequest(u);
-    }*/
+        return getCompilations(u);
+    }
 }

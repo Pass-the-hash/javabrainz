@@ -277,7 +277,7 @@ public class Database{
         while(results.next()){
             tmp=results.getString(4);
             String[] format=tmp.split(",");
-            albums.add(new Album(null, results.getNString(2), results.getString(3), format, results.getString(5), LocalDate.parse(results.getString(6)), results.getInt(7), results.getString(1)));
+            albums.add(new Album(null, results.getNString(2), LocalDate.parse(results.getString(6)), results.getString(1)));
         }
         
         return albums;
@@ -292,7 +292,7 @@ public class Database{
         while(results.next()){
             tmp=results.getString(4);
             String[] format=tmp.split(",");
-            compilations.add(new Compilation(null, results.getNString(2), results.getString(3), format, results.getString(5), LocalDate.parse(results.getString(6)), results.getInt(7), results.getString(1)));
+            compilations.add(new Compilation(null, results.getNString(2), LocalDate.parse(results.getString(6)), results.getString(1)));
         }
         return compilations;
     }

@@ -25,7 +25,7 @@ public class Release{
         System.out.println("Title: " + Title);
         if (Language!=null) System.out.println("Language: " + Language);
         if (Status!=null) System.out.println("Status: " + Status);
-        System.out.println("Track count: " + TrackCount);
+        if (TrackCount>=0) System.out.println("Track count: " + TrackCount);
         if (Format!=null){System.out.print("Formats: "); for (int i=0; i<5; i++) if (Format[i]!=null) System.out.print(Format[i] + " "); System.out.println();}
         if (ReleaseDate!=null) System.out.println("Release date: " + ReleaseDate);
         //return "{" + "Title=" + Title + ", Language=" + Language + ", Status=" + Status + ", Format=" + Arrays.toString(Format) + ", ReleaseDate=" + ReleaseDate + '}';
