@@ -2,8 +2,6 @@ package files;
 
 import basics.*;
 
-import com.google.gson.*;
-
 import com.jayway.jsonpath.*;
 
 import org.jsoup.*;
@@ -12,8 +10,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,26 +31,9 @@ public class APIWrapper {
     private static int CheckDate(String date){
        return date.length() - date.replaceAll("-","").length();
     }
+
     
-    public static void artistDeserialize() throws IOException{
-        String results=getResponse("http://musicbrainz.org/ws/2/release-group/?query=" + "muse_in_arms" + "&fmt=json");
-        Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
-        int i=2;
-        List p=JsonPath.using(conf).parse(results).read("$.release-groups["+i+"].artist-credit[*].artist.id");
-        List test;
-        /*for (int j=0; j<p.size(); j++){
-            test=null;
-            //if (p.get(j)!=null) test=(String) p.get(j);
-            if(p.get(j)!=null) test=JsonPath.using(conf).parse(results).read("$.releases["+j+"].media[*].format");
-            System.out.println(p.get(j));
-            System.out.println(test);
-            
-        }*/
-        System.out.println(p);
-        System.out.println(p.size());
-    }
-    
-    public static ArrayList<Artist> getArtists(String u) throws IOException{
+    private static ArrayList<Artist> getArtists(String u) throws IOException{
         String response = getResponse(u);
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         
@@ -159,18 +138,18 @@ public class APIWrapper {
     private static LinkedList<String> populateRelations(String id) throws IOException{ //member gathering
         String url = "https://musicbrainz.org/ws/2/artist/"+ id +"?inc=artist-rels&fmt=json";
         String results = Jsoup.connect(url).ignoreContentType(true).execute().body();
-        Gson gson = new Gson();
-        RelationDeserializer relations=gson.fromJson(results, RelationDeserializer.class);
+        Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
+        List<String> names=JsonPath.parse(results).read("$.relations[*].artist.name"), types=JsonPath.parse(results).read("$.relations[*].type");
         LinkedList<String> members=new LinkedList();
-        for (RelationDeserializer.Relation i:relations.relations){
-             if (i.type.equals("member of band")) members.add(i.artist.name);
+        for (int i=0; i<types.size(); i++){
+             if (types.get(i).equals("member of band") && names.get(i)!=null) members.add(names.get(i));
         }
         return members;
     }
     
     public static ArrayList<Album> getAlbumsWithName(String index) throws IOException{
 
-        //String encoded  = urlEncodeUTF8(hmap);
+        index=index.replace(' ', '_');
         String u = "http://musicbrainz.org/ws/2/release-group/?query=" + index + "&fmt=json";
 
         return getAlbums(u);
@@ -178,7 +157,7 @@ public class APIWrapper {
     
     public static ArrayList<Artist> getArtistsWithName(String index) throws IOException{
 
-        //String encoded  = urlEncodeUTF8(hmap);
+        index=index.replace(' ', '_');
         String u = "http://musicbrainz.org/ws/2/artist/?query=" + index + "&fmt=json";
 
         return getArtists(u);
@@ -187,14 +166,14 @@ public class APIWrapper {
     
     public static ArrayList<Release> getReleasesWithName(String index) throws IOException {
 
-        //String encoded = urlEncodeUTF8(hmap);
+        index=index.replace(' ', '_');
         String u = "http://musicbrainz.org/ws/2/release/?query=" + index + "&fmt=json";
 
         return getReleases(u);
     }
     
     public static ArrayList<Compilation> getCompilationsWithName(String index) throws IOException{
-        //String encoded  = urlEncodeUTF8(hmap);
+        index=index.replace(' ', '_');
         String u = "http://musicbrainz.org/ws/2/release-group/?query=" + index + "%20AND%20secondarytype:compilation&fmt=json";
 
         return getCompilations(u);
