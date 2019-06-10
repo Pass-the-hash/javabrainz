@@ -15,7 +15,11 @@ public class Compilation extends Release{
     @Override
     public String toString() {
         super.toString();
-        if (Artists!=null) for (Artist i:Artists)System.out.println("Artists: " + i.Name);
+        if (Artists!=null){
+            System.out.println(System.lineSeparator() + "Artists: ");
+             Artists.toString();
+        }
+        //System.out.println();
         //return super.toString() + "{" + Artists.toString() + '}';
         return null;
     }

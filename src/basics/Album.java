@@ -14,7 +14,10 @@ public class Album extends Release{
     @Override
     public String toString() {
         super.toString();
-        if (Artist!=null) System.out.println("Artist: " + Artist.Name);
+        if (Artist!=null){
+            System.out.println(System.lineSeparator() + "Artist: ");
+            Artist.toString();
+        }
         //return super.toString() + "{" + "Artist=" + Artist + '}';
         return null;
     }
