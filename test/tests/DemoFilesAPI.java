@@ -1,16 +1,16 @@
 package tests;
 
 import basics.*;
+import db.Database;
 import files.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import org.jsoup.Jsoup;
 
 public class DemoFilesAPI {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException, InterruptedException {
         //FileWrapper out=new FileWrapper();
         ArrayList<Artist> test;
         ArrayList<Release> test2;
@@ -36,9 +36,10 @@ public class DemoFilesAPI {
         //APIWrapper.artistDeserialize();
         /*test=APIWrapper.getArtists("kiss");
         test.toString();*/
-        
-        test2=APIWrapper.getReleases("dynasty");
-        test2.toString();
+        APIWrapper.getAlbumsWithName("dynasty").toString();
+        //Database.CreateDatabase();
+        //test=APIWrapper.getArtistsWithName("infected");
+        //Database.WriteArtists(test);
         System.out.println(System.lineSeparator() + "OOF!");
     }
     
