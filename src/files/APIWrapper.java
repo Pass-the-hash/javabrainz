@@ -4,8 +4,6 @@ import basics.*;
 
 import com.jayway.jsonpath.*;
 
-import org.jsoup.*;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
