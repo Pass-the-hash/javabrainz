@@ -16,7 +16,38 @@ import java.util.List;
 
 public class APIWrapper {
 
-    private static String getResponse(String u) throws IOException{
+    static class Request extends Thread{
+        public Request(){}
+    
+        public static String getResponse(String u) throws IOException{
+
+            URL url = new URL(u);
+            url.openConnection();
+
+            String response;
+            try (Scanner scanner = new Scanner(url.openStream())) {
+                response = scanner.useDelimiter("\\Z").next();
+            }
+            url.openStream().close();
+            return response;
+        }
+        public void run(){ 
+            try { 
+            // Displaying the thread that is running 
+            System.out.println ("Thread " + 
+                  Thread.currentThread().getId() + 
+                  " is running"); 
+  
+            } 
+            catch (Exception e) 
+            { 
+                // Throwing an exception 
+                System.out.println ("Exception is caught"); 
+            } 
+        }
+    }
+    
+    /*private static String getResponse(String u) throws IOException{
 
         URL url = new URL(u);
         url.openConnection();
@@ -27,14 +58,14 @@ public class APIWrapper {
         }
         url.openStream().close();
         return response;
-    }
+    }*/
     private static int CheckDate(String date){
        return date.length() - date.replaceAll("-","").length();
     }
 
     
     private static ArrayList<Artist> getArtists(String u) throws IOException{
-        String response = getResponse(u);
+        String response = Request.getResponse(u);
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         
         List<String> names=JsonPath.read(response, "$.artists[*].name"), ids=JsonPath.read(response, "$.artists[*].id"), types=JsonPath.using(conf).parse(response).read("$.artists[*].type");
@@ -63,7 +94,7 @@ public class APIWrapper {
                 else person=new Person(genders.get(i), names.get(i), country, city, null, null, alias, tag, ids.get(i));
                 artists.add(person);
             } else if(types.get(i).equals("Group")){
-                if (requests<13){members=populateRelations(ids.get(i)); requests++;}
+                members=populateRelations(ids.get(i));
                 if (begin!=null && end!=null && CheckDate(begin)==2 && CheckDate(end)==2) group=new Group(names.get(i), country, city, LocalDate.parse(begin), LocalDate.parse(end), alias, tag, members, ids.get(i));
                 else if (begin!=null && CheckDate(begin)==2) group=new Group(names.get(i), country, city, LocalDate.parse(begin), null, alias, tag, members, ids.get(i));
                 else group=new Group(names.get(i), country, city, null, alias, tag, members, ids.get(i));
@@ -74,7 +105,7 @@ public class APIWrapper {
     }
 
     private static ArrayList<Release> getReleases(String u) throws IOException {
-        String response = getResponse(u);
+        String response = Request.getResponse(u);
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         ArrayList<Release> releases=new ArrayList();
         
@@ -97,7 +128,7 @@ public class APIWrapper {
     }
     
     private static ArrayList<Album> getAlbums(String u) throws IOException{
-        String response = getResponse(u);
+        String response = Request.getResponse(u);
         ArrayList albums=new ArrayList();
         ArrayList<Artist> artists;
         
@@ -114,7 +145,7 @@ public class APIWrapper {
     }
     
     private static ArrayList<Compilation> getCompilations(String u) throws IOException{
-        String response = getResponse(u);
+        String response = Request.getResponse(u);
         ArrayList<Compilation> compilations=new ArrayList();
         ArrayList<Artist> artists=new ArrayList();
         ArrayList<Artist> tmp;
@@ -137,7 +168,9 @@ public class APIWrapper {
     
     private static LinkedList<String> populateRelations(String id) throws IOException{ //member gathering
         String url = "https://musicbrainz.org/ws/2/artist/"+ id +"?inc=artist-rels&fmt=json";
-        String results = Jsoup.connect(url).ignoreContentType(true).execute().body();
+        Request.sleep(2500);
+        
+        String results = Request.getResponse(url);
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         List<String> names=JsonPath.parse(results).read("$.relations[*].artist.name"), types=JsonPath.parse(results).read("$.relations[*].type");
         LinkedList<String> members=new LinkedList();
