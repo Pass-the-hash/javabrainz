@@ -57,7 +57,11 @@ public class API extends javax.swing.JFrame {
         apiSearchButton.setToolTipText("Search");
         apiSearchButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                apiSearchButtonMouseClicked(evt);
+                try {
+                    apiSearchButtonMouseClicked(evt);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         jPanel1.add(apiSearchButton);
@@ -115,7 +119,7 @@ public class API extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_queryTextActionPerformed
 
-    private void apiSearchButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_apiSearchButtonMouseClicked
+    private void apiSearchButtonMouseClicked(java.awt.event.MouseEvent evt) throws InterruptedException {//GEN-FIRST:event_apiSearchButtonMouseClicked
         /*System.out.println(queryText.getText());
         System.out.println(jList.getSelectedValue());
         System.out.println(jList1.getSelectedValue());*/

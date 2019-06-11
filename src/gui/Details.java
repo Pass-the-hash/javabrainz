@@ -11,9 +11,10 @@ import java.util.logging.Logger;
 public class Details extends javax.swing.JFrame {
 
     public static void ContinueWithArtists(ArrayList<Artist> arr){
-        System.out.println("OK!");
         artists=arr;
-        initComponents();
+        Details details=new Details();
+        details.setVisible(true);
+        //initComponents();
     }
     public static void ContinueWithReleases(ArrayList<Release> arr){
         releases=arr;
@@ -109,6 +110,7 @@ public class Details extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        //artists.toString();
         try {
             if (artists!=null) Database.WriteArtists(artists);
             if (compilations!=null) Database.WriteCompilations(compilations);
