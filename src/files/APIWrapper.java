@@ -29,6 +29,7 @@ public class APIWrapper {
             url.openStream().close();
             return response;
         }
+        @Override
         public void run(){ 
             try { 
             // Displaying the thread that is running 
@@ -62,7 +63,7 @@ public class APIWrapper {
     }
 
     
-    private static ArrayList<Artist> getArtists(String u) throws IOException{
+    private static ArrayList<Artist> getArtists(String u) throws IOException, InterruptedException{
         String response = Request.getResponse(u);
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         
@@ -92,6 +93,7 @@ public class APIWrapper {
                 else person=new Person(genders.get(i), names.get(i), country, city, null, null, alias, tag, ids.get(i));
                 artists.add(person);
             } else if(types.get(i).equals("Group")){
+                Request.sleep(1500);
                 members=populateRelations(ids.get(i));
                 if (begin!=null && end!=null && CheckDate(begin)==2 && CheckDate(end)==2) group=new Group(names.get(i), country, city, LocalDate.parse(begin), LocalDate.parse(end), alias, tag, members, ids.get(i));
                 else if (begin!=null && CheckDate(begin)==2) group=new Group(names.get(i), country, city, LocalDate.parse(begin), null, alias, tag, members, ids.get(i));
@@ -125,10 +127,10 @@ public class APIWrapper {
         return releases;
     }
     
-    private static ArrayList<Album> getAlbums(String u) throws IOException{
+    private static ArrayList<Album> getAlbums(String u) throws IOException, InterruptedException{
         String response = Request.getResponse(u);
         ArrayList albums=new ArrayList();
-        ArrayList<Artist> artists;
+        ArrayList<Artist> artists=new ArrayList();
         
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         List<String> titles=JsonPath.read(response, "$.release-groups[*].title"), ids=JsonPath.read(response, "$.release-groups[*].id"), artist_ids=JsonPath.using(conf).parse(response).read("$.release-groups[*].artist-credit[0].artist.id");;
@@ -136,13 +138,19 @@ public class APIWrapper {
         
         for (int i=0; i<ids.size(); i++){
             if (compilations.get(i)!=null) continue;
-                //artists = APIWrapper.getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + artist_ids.get(i) + "&fmt=json");
-                albums.add(new Album(null, titles.get(i), null, ids.get(i)));
+            //for(int i=0; i<artist){
+            if (artist_ids.get(i)!=null && i<artist_ids.size()){
+                Request.sleep(1500);
+                artists = APIWrapper.getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + artist_ids.get(i) + "&fmt=json");
+                if (!artists.isEmpty()) albums.add(new Album(artists.get(0), titles.get(i), null, ids.get(i)));
+            }
+            //}
+           albums.add(new Album(null, titles.get(i), null, ids.get(i)));
         }
         return albums;
     }
     
-    private static ArrayList<Compilation> getCompilations(String u) throws IOException{
+    private static ArrayList<Compilation> getCompilations(String u) throws IOException, InterruptedException{
         String response = Request.getResponse(u);
         ArrayList<Compilation> compilations=new ArrayList();
         ArrayList<Artist> artists=new ArrayList();
@@ -152,13 +160,17 @@ public class APIWrapper {
         List<String> titles=JsonPath.read(response, "$.release-groups[*].title"), ids=JsonPath.read(response, "$.release-groups[*].id"), artist_ids;
         
         for (int i=0; i<ids.size(); i++){
-            /*artist_ids=JsonPath.using(conf).parse(response).read("$.release-groups["+i+"].artist-credit[*].artist.id");
-            System.out.println(i);
-            tmp=getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + artist_ids.get(i) + "&fmt=json");
-            for (Artist obj:tmp){
-                artists.add(obj);
-            }*/
-            compilations.add(new Compilation(null, titles.get(i), null, ids.get(i)));
+            artist_ids=JsonPath.using(conf).parse(response).read("$.release-groups["+i+"].artist-credit[*].artist.id");
+            //System.out.println(i);
+            
+            if (artist_ids.get(i)!=null){
+                Request.sleep(1500);
+                tmp=getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + artist_ids.get(i) + "&fmt=json");
+                for (Artist obj:tmp){
+                    artists.add(obj);
+                }
+            }
+            compilations.add(new Compilation(artists, titles.get(i), null, ids.get(i)));
         }
         return compilations;
     }
@@ -166,7 +178,7 @@ public class APIWrapper {
     
     private static LinkedList<String> populateRelations(String id) throws IOException{ //member gathering
         String url = "https://musicbrainz.org/ws/2/artist/"+ id +"?inc=artist-rels&fmt=json";
-        Request.sleep(2500);
+        //Request.sleep(2500);
         
         String results = Request.getResponse(url);
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
@@ -178,7 +190,7 @@ public class APIWrapper {
         return members;
     }
     
-    public static ArrayList<Album> getAlbumsWithName(String index) throws IOException{
+    public static ArrayList<Album> getAlbumsWithName(String index) throws IOException, InterruptedException{
 
         index=index.replace(' ', '_');
         String u = "http://musicbrainz.org/ws/2/release-group/?query=" + index + "&fmt=json";
@@ -186,7 +198,7 @@ public class APIWrapper {
         return getAlbums(u);
     }
     
-    public static ArrayList<Artist> getArtistsWithName(String index) throws IOException{
+    public static ArrayList<Artist> getArtistsWithName(String index) throws IOException, InterruptedException{
 
         index=index.replace(' ', '_');
         String u = "http://musicbrainz.org/ws/2/artist/?query=" + index + "&fmt=json";
@@ -203,7 +215,7 @@ public class APIWrapper {
         return getReleases(u);
     }
     
-    public static ArrayList<Compilation> getCompilationsWithName(String index) throws IOException{
+    public static ArrayList<Compilation> getCompilationsWithName(String index) throws IOException, InterruptedException{
         index=index.replace(' ', '_');
         String u = "http://musicbrainz.org/ws/2/release-group/?query=" + index + "%20AND%20secondarytype:compilation&fmt=json";
 
