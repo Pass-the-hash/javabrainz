@@ -46,11 +46,11 @@ public class DemoBasics {
         System.out.println("OK!" + System.lineSeparator());
         
         System.out.println(System.lineSeparator() + "Creating album...");
-        Album dynasty = new Album(kiss,"Dynasty","English",format,"official", LocalDate.of(1979, 5, 23), TrackCount, "79679");
+        Album dynasty = new Album(kiss,"Dynasty", LocalDate.of(1979, 5, 23), "79679");
         System.out.println("OK!" + System.lineSeparator());
         
         System.out.println(System.lineSeparator() + "Creating compilation...");
-        Compilation comp = new Compilation(artists, "80's hits", "English", format, "Unofficial", LocalDate.of(2019, 3, 30), TrackCount, "4685");
+        Compilation comp = new Compilation(artists, "80's hits", LocalDate.of(2019, 3, 30), "4685");
         System.out.println("OK!" + System.lineSeparator());
 
         System.out.println(System.lineSeparator() + "Creating release...");
@@ -70,10 +70,10 @@ public class DemoBasics {
         comp.toString();
         System.out.println();
         
-        ArrayList<Artist> test=new ArrayList();
-        ArrayList<Release> test2=new ArrayList();
+        ArrayList<Artist> test;
+        ArrayList<Release> test2;
         Database.CreateDatabase();
-        Database.WriteArtist(kiss);
+        /*Database.WriteArtist(kiss);
         Database.WriteArtist(gene);
         Database.WriteAlbum(dynasty);
         Database.WriteCompilation(comp);
@@ -81,8 +81,8 @@ public class DemoBasics {
         test2=Database.ReadReleases();
         test.get(0).toString();
         test2.get(0).toString();
-        System.out.println("OOF!");
-        System.out.println("OOF!");
+        Database.ReadAlbums().toString();
+        Database.ReadCompilations();*/
         System.out.println("OOF!");
     }
 }

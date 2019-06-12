@@ -1,7 +1,6 @@
 package tests;
 
 import basics.*;
-import db.Database;
 import files.*;
 
 import java.io.IOException;
@@ -34,13 +33,14 @@ public class DemoFilesAPI {
             System.out.println();
         }*/
         //APIWrapper.artistDeserialize();
-        /*test=APIWrapper.getArtists("kiss");
-        test.toString();*/
-        APIWrapper.getAlbumsWithName("dynasty").toString();
-        //Database.CreateDatabase();
-        //test=APIWrapper.getArtistsWithName("infected");
-        //Database.WriteArtists(test);
-        System.out.println(System.lineSeparator() + "OOF!");
+        /*test=APIWrapper.getArtists("N.O.E");
+        test.toString();
+        
+        test2=APIWrapper.getReleases("piece_heroique");
+        test2.toString();*/
+        APIWrapper.getCompilationsWithName("trance").toString();
+        //APIWrapper.getReleasesWithName("dynasty").toString();
+        System.out.println("OOF!");
     }
     
 }
