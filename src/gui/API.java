@@ -22,12 +22,14 @@ public class API extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         queryText = new javax.swing.JTextField();
-        apiSearchButton = new javax.swing.JButton();
+        ExitButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList = new javax.swing.JList<>();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
+        ProgressBar = new javax.swing.JProgressBar();
+        apiSearchButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(java.awt.Color.white);
@@ -52,20 +54,16 @@ public class API extends javax.swing.JFrame {
         jPanel1.add(queryText);
         queryText.setBounds(20, 70, 150, 30);
 
-        apiSearchButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        apiSearchButton.setText("Find");
-        apiSearchButton.setToolTipText("Search");
-        apiSearchButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        ExitButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        ExitButton.setText("Cancel");
+        ExitButton.setToolTipText("Search");
+        ExitButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                try {
-                    apiSearchButtonMouseClicked(evt);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                ExitButtonMouseClicked(evt);
             }
         });
-        jPanel1.add(apiSearchButton);
-        apiSearchButton.setBounds(340, 230, 120, 25);
+        jPanel1.add(ExitButton);
+        ExitButton.setBounds(520, 210, 120, 25);
 
         jList.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jList.setModel(new javax.swing.AbstractListModel<String>() {
@@ -100,6 +98,19 @@ public class API extends javax.swing.JFrame {
 
         jPanel1.add(jScrollPane2);
         jScrollPane2.setBounds(550, 60, 160, 90);
+        jPanel1.add(ProgressBar);
+        ProgressBar.setBounds(60, 290, 700, 30);
+
+        apiSearchButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        apiSearchButton1.setText("Find");
+        apiSearchButton1.setToolTipText("Search");
+        apiSearchButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                apiSearchButton1MouseClicked(evt);
+            }
+        });
+        jPanel1.add(apiSearchButton1);
+        apiSearchButton1.setBounds(150, 210, 120, 25);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -119,15 +130,17 @@ public class API extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_queryTextActionPerformed
 
-    private void apiSearchButtonMouseClicked(java.awt.event.MouseEvent evt) throws InterruptedException {//GEN-FIRST:event_apiSearchButtonMouseClicked
+    private void apiSearchButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExitButtonMouseClicked
         /*System.out.println(queryText.getText());
         System.out.println(jList.getSelectedValue());
         System.out.println(jList1.getSelectedValue());*/
         if (jList.getSelectedValue().equals("Artists")){
             if (jList1.getSelectedValue().equals("Name")) try {
+                ProgressBar.setValue(10);
                 artists=APIWrapper.getArtistsWithName(queryText.getText());
+                ProgressBar.setMaximum(WIDTH);
                 Details.ContinueWithArtists(artists);
-            } catch (IOException ex) {
+            } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList.getSelectedValue().equals("Releases")){
@@ -141,22 +154,26 @@ public class API extends javax.swing.JFrame {
             if (jList1.getSelectedValue().equals("Name")) try {
                 albums=APIWrapper.getAlbumsWithName(queryText.getText());
                 Details.ContinueWithAlbums(albums);
-            } catch (IOException ex) {
+            } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList.getSelectedValue().equals("Compilations")){
             if (jList1.getSelectedValue().equals("Name")) try {
                 compilations=APIWrapper.getCompilationsWithName(queryText.getText());
                 Details.ContinueWithCompilations(compilations);
-            } catch (IOException ex) {
+            } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_apiSearchButtonMouseClicked
+    }//GEN-LAST:event_ExitButtonMouseClicked
 
     private void jListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListValueChanged
         
     }//GEN-LAST:event_jListValueChanged
+
+    private void ExitButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_apiSearchButton1MouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_apiSearchButton1MouseClicked
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -191,7 +208,9 @@ public class API extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton apiSearchButton;
+    private javax.swing.JButton ExitButton;
+    private javax.swing.JProgressBar ProgressBar;
+    private javax.swing.JButton apiSearchButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JList<String> jList;

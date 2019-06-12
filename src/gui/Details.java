@@ -10,27 +10,34 @@ import java.util.logging.Logger;
 
 public class Details extends javax.swing.JFrame {
 
+    public static void ShowDB(ArrayList<String> arr){
+        Details details=new Details();
+        details.setVisible(true);
+        jTextArea1.setText(arr.toString());
+}
     public static void ContinueWithArtists(ArrayList<Artist> arr){
         artists=arr;
         Details details=new Details();
         details.setVisible(true);
-        //initComponents();
+        jTextArea1.setText(artists.toString());
     }
     public static void ContinueWithReleases(ArrayList<Release> arr){
         releases=arr;
         Details details=new Details();
         details.setVisible(true);
-
+        jTextArea1.setText(releases.toString());
     }
     public static void ContinueWithAlbums(ArrayList<Album> arr){
         albums=arr;
         Details details=new Details();
         details.setVisible(true);
+        jTextArea1.setText(albums.toString());
     }
     public static void ContinueWithCompilations(ArrayList<Compilation> arr){
         compilations=arr;
         Details details=new Details();
         details.setVisible(true);
+        jTextArea1.setText(compilations.toString());
     }
     
     public Details() {
@@ -48,7 +55,6 @@ public class Details extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(java.awt.Color.white);
@@ -110,7 +116,6 @@ public class Details extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        //artists.toString();
         try {
             if (artists!=null) Database.WriteArtists(artists);
             if (compilations!=null) Database.WriteCompilations(compilations);
@@ -162,7 +167,7 @@ public class Details extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private static javax.swing.JTextArea jTextArea1;
     private static ArrayList<Artist> artists;
     private static ArrayList<Release> releases;
     private static ArrayList<Album> albums;

@@ -92,42 +92,66 @@ public class DB extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void databaseSearchButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_databaseSearchButtonMouseClicked
+        ArrayList<String> results=new ArrayList();
         if (jList1.getSelectedValue().equals("Artists")){
             try {
                 artists=Database.ReadArtists();
+                for (int i=0; i<artists.size(); i++){
+                    if (artists.get(i).getName().equals(jTextField1.getText())) results.add(artists.get(i).toString());
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList1.getSelectedValue().equals("Releases")){
             try {
                 releases=Database.ReadReleases();
+                for (int i=0; i<releases.size(); i++){
+                    if (releases.get(i).getTitle().equals(jTextField1.getText())) results.add(releases.get(i).toString());
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList1.getSelectedValue().equals("Albums")){
             try {
                 albums=Database.ReadAlbums();
+                for (int i=0; i<albums.size(); i++){
+                    if (albums.get(i).getTitle().equals(jTextField1.getText())) results.add(albums.get(i).toString());
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList1.getSelectedValue().equals("Compilations")){
             try {
                 compilations=Database.ReadCompilations();
+                for (int i=0; i<compilations.size(); i++){
+                    if (compilations.get(i).getTitle().equals(jTextField1.getText())) results.add(compilations.get(i).toString());
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        NotInDatabase nodb;
+        
+        /*if (!artists.isEmpty()){
+            Details.ContinueWithArtists(artists);
+        }else if (releases.isEmpty()){
+            Details.ContinueWithReleases(releases);
+        }else if (albums.isEmpty()){
+            Details.ContinueWithAlbums(albums);
+        }else if (compilations.isEmpty()){
+            Details.ContinueWithCompilations(compilations);
+        }*/
+        if (!results.isEmpty()) Details.ShowDB(results);
+        else{
+            nodb=new NotInDatabase();
+            nodb.setVisible(true);
+        }
 }//GEN-LAST:event_databaseSearchButtonMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+       
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -144,10 +168,7 @@ public class DB extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(DB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+       
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
