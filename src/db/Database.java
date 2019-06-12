@@ -50,7 +50,7 @@ public class Database{
                 + "id VARCHAR(50), "
                 + "name NVARCHAR2(50), "
                 + "gender VARCHAR(8), "
-                + "country VARCHAR(10), "
+                + "country VARCHAR(50), "
                 + "cities VARCHAR(50), "
                 + "begindate VARCHAR(10), "
                 + "enddate VARCHAR(10), "
@@ -79,79 +79,87 @@ public class Database{
     }
     
     public static void WriteArtist(Person artist) throws SQLException {
+        Init();
         PreparedStatement statement=connection.prepareStatement("insert into ARTISTS ("
                 + "id, name, gender, country, cities, begindate, enddate, aliases, members, tags)"
                 + "VALUES(?,?,?,?,?,?,?,?,?,?)");
-        String cities=artist.getCities(), aliases=(String) artist.getAliases().get(0), tags=(String) artist.getTags().get(0);
-        /*for (int i=1; i<artist.getCities().length; i++){
-            cities=cities + "," + artist.getCities()[i];
-        }*/
-        for (int i=1; i<artist.getAliases().size(); i++){
+        String aliases="", tags="", members="";
+        for (int i=0; i<artist.getAliases().size(); i++){
             aliases=aliases + "," + artist.getAliases().get(i);
         }
-        for(int i=1; i<artist.getTags().size(); i++){
+        for(int i=0; i<artist.getTags().size(); i++){
             tags=tags + "," + artist.getTags().get(i);
         }
         statement.setString(1, artist.getID());
         statement.setString(2, artist.getName());
         statement.setString(3, artist.getGender());
         statement.setString(4, artist.getCountry());
-        statement.setString(5, cities);
-        statement.setString(6, artist.getBirthDate().toString());
+        statement.setString(5, artist.getCities());
+        if (artist.getBirthDate()!=null) statement.setString(6, artist.getBirthDate().toString());
+        else statement.setString(6, null);
         if (artist.getDeathDate()!=null) statement.setString(7, artist.getDeathDate().toString());
         else statement.setString(7, null);
         statement.setString(8, aliases);
-        statement.setString(9, null);
+        statement.setString(9, members);
         statement.setString(10, tags);
         statement.executeUpdate();
     }
     
     public static void WriteArtist(Group artist) throws SQLException {
+        Init();
         PreparedStatement statement=connection.prepareStatement("insert into ARTISTS ("
                 + "id, name, gender, country, cities, begindate, enddate, aliases, members, tags)"
                 + "VALUES(?,?,?,?,?,?,?,?,?,?)");
-        String cities=artist.getCities(), aliases=(String) artist.getAliases().get(0), tags=(String) artist.getTags().get(0), members=(String) artist.getMembers().get(0);
+        String aliases="", tags="", members="";
+        /*if () aliases=artist.getAliases().get(0);
+        if ()*/
         /*for (int i=1; i<artist.getCities().length; i++){
             cities=cities + "," + artist.getCities()[i];
         }*/
-        for (int i=1; i<artist.getAliases().size(); i++){
+        for (int i=0; i<artist.getAliases().size(); i++){
             aliases=aliases + "," + artist.getAliases().get(i);
         }
-        for(int i=1; i<artist.getTags().size(); i++){
+        for(int i=0; i<artist.getTags().size(); i++){
             tags=tags + "," + artist.getTags().get(i);
         }
-        for(int i=1; i<artist.getMembers().size(); i++){
+        for(int i=0; i<artist.getMembers().size(); i++){
             members=members + "," + artist.getMembers().get(i);
         }
         statement.setString(1, artist.getID());
         statement.setString(2, artist.getName());
         statement.setString(3, null);
         statement.setString(4, artist.getCountry());
-        statement.setString(5, cities);
-        statement.setString(6, artist.getBeginDate().toString());
+        statement.setString(5, artist.getCities());
+        if (artist.getBeginDate()!=null) statement.setString(6, artist.getBeginDate().toString());
+        else statement.setString(6, null);
         if (artist.getEndDate()!=null) statement.setString(7, artist.getEndDate().toString());
         else statement.setString(7, null);
         statement.setString(8, aliases);
         statement.setString(9, members);
         statement.setString(10, tags);
         statement.executeUpdate();
-        System.out.println(artist.getBeginDate().toString());
     }
 
     public static void WriteRelease(Release release) throws SQLException {
+        Init();
         PreparedStatement statement=connection.prepareStatement("insert into ARTISTS ("
                 + "id, title, format, language, status, release_date, track, artist, artists)"
                 + "VALUES(?,?,?,?,?,?,?,?,?)");
-        String format=release.getFormat()[0];
-        for (int i=1; i<release.getFormat().length; i++){
-            format=format + "," + release.getFormat()[i];
-        }
+        String format="";
+        /*if (release.getFormat()!=null){
+            format=release.getFormat()[0];*/
+            for (int i=0; i<release.getFormat().length; i++){
+                format=format + "," + release.getFormat()[i];
+            }
+        //}
+        
         statement.setString(0, release.getID());
         statement.setString(1, release.getTitle());
         statement.setString(2, format);
         statement.setString(4, release.getLanguage());
         statement.setString(5, release.getStatus());
-        statement.setString(6, release.getReleaseDate().toString());
+        if (release.getReleaseDate()!=null) statement.setString(6, release.getReleaseDate().toString());
+        else statement.setString(6, null);
         statement.setInt(7, release.getTrackCount());
         statement.setString(8, null);
         statement.setString(9, null);
@@ -159,6 +167,7 @@ public class Database{
     }
 
     public static void WriteAlbum(Album album) throws SQLException {
+        Init();
         PreparedStatement statement=connection.prepareStatement("insert into RELEASES ("
                 + "id, title, format, language, status, release_date, track, artist, artists)"
                 + "VALUES(?,?,?,?,?,?,?,?,?)");
@@ -171,7 +180,8 @@ public class Database{
         statement.setString(3, null);
         statement.setString(4, null);
         statement.setString(5, null);
-        statement.setString(6, album.getReleaseDate().toString());
+        if (album.getReleaseDate()!=null) statement.setString(6, album.getReleaseDate().toString());
+        else statement.setString(6, null);
         statement.setInt(7, -1);
         statement.setString(8, album.getArtist().getID());
         statement.setString(9, null);
@@ -182,6 +192,7 @@ public class Database{
     }
     
     public static void WriteCompilation(Compilation compilation) throws SQLException {
+        Init();
         PreparedStatement statement=connection.prepareStatement("insert into RELEASES ("
                 + "id, title, format, language, status, release_date, track, artist, artists)"
                 + "VALUES(?,?,?,?,?,?,?,?,?)");
@@ -197,7 +208,8 @@ public class Database{
         statement.setString(3, null);
         statement.setString(4, null);
         statement.setString(5, null);
-        statement.setString(6, compilation.getReleaseDate().toString());
+        if (compilation.getReleaseDate()!=null) statement.setString(6, compilation.getReleaseDate().toString());
+        else statement.setString(6, null);
         statement.setInt(7, -1);
         statement.setString(8, null);
         statement.setString(9, artists);
@@ -231,10 +243,11 @@ public class Database{
     }
 
     public static ArrayList<Artist> ReadArtists() throws SQLException{
+        Init();
         Statement statement=connection.createStatement();
         ResultSet results=statement.executeQuery("select * from ARTISTS");
         ArrayList artists=new ArrayList();
-        LinkedList aliases, tags, members=null;
+        LinkedList aliases=null, tags=null, members=null;
         LocalDate begin=null, end=null;
         String cities, tmp;
         
@@ -242,11 +255,11 @@ public class Database{
             cities=results.getString(5);
             //cities=tmp.split(",");
             tmp=results.getString(8);
-            aliases=new LinkedList(Arrays.asList(tmp.split(" , ")));
+            if (tmp!=null) aliases=new LinkedList(Arrays.asList(tmp.split(" , ")));
             tmp=results.getString(9);
             if (tmp!=null) members=new LinkedList(Arrays.asList(tmp.split(" , ")));
             tmp=results.getString(10);
-            tags=new LinkedList(Arrays.asList(tmp.split(" , ")));
+            if (tmp!=null) tags=new LinkedList(Arrays.asList(tmp.split(" , ")));
             if (results.getString(6)!=null) begin=LocalDate.parse(results.getString(6));
             if (results.getString(7)!=null) end=LocalDate.parse(results.getString(7));
             if (results.getString(3)!=null)
@@ -260,7 +273,7 @@ public class Database{
     public static ArrayList<Release> ReadReleases() throws SQLException{
         Statement statement=connection.createStatement();
         ResultSet results=statement.executeQuery("select * from RELEASES");
-        ArrayList<Release> releases=new ArrayList<Release>();
+        ArrayList<Release> releases=new ArrayList();
         String tmp;
         String[] format=null;
         while (results.next()) {
@@ -272,6 +285,7 @@ public class Database{
     }
     
     public static ArrayList<Album> ReadAlbums() throws SQLException{
+        Init();
         Statement statement=connection.createStatement();
         ResultSet results=statement.executeQuery("select * from RELEASES");
         ArrayList<Album> albums=new ArrayList();
@@ -293,6 +307,7 @@ public class Database{
     }
     
     public static ArrayList<Compilation> ReadCompilations() throws SQLException{
+        Init();
         Statement statement=connection.createStatement();
         ResultSet results=statement.executeQuery("select * from RELEASES");
         ArrayList<Compilation> compilations=new ArrayList();
