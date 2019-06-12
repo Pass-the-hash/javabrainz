@@ -28,7 +28,6 @@ public class API extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
-        ProgressBar = new javax.swing.JProgressBar();
         apiSearchButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -98,8 +97,6 @@ public class API extends javax.swing.JFrame {
 
         jPanel1.add(jScrollPane2);
         jScrollPane2.setBounds(550, 60, 160, 90);
-        jPanel1.add(ProgressBar);
-        ProgressBar.setBounds(60, 290, 700, 30);
 
         apiSearchButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         apiSearchButton1.setText("Find");
@@ -136,9 +133,9 @@ public class API extends javax.swing.JFrame {
         System.out.println(jList1.getSelectedValue());*/
         if (jList.getSelectedValue().equals("Artists")){
             if (jList1.getSelectedValue().equals("Name")) try {
-                ProgressBar.setValue(10);
+                //ProgressBar.setValue(10);
                 artists=APIWrapper.getArtistsWithName(queryText.getText());
-                ProgressBar.setMaximum(WIDTH);
+                //ProgressBar.setMaximum(WIDTH);
                 Details.ContinueWithArtists(artists);
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,7 +206,6 @@ public class API extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ExitButton;
-    private javax.swing.JProgressBar ProgressBar;
     private javax.swing.JButton apiSearchButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
