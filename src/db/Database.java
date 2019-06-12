@@ -183,7 +183,8 @@ public class Database{
         if (album.getReleaseDate()!=null) statement.setString(6, album.getReleaseDate().toString());
         else statement.setString(6, null);
         statement.setInt(7, -1);
-        statement.setString(8, album.getArtist().getID());
+        if (album.getArtist()!=null) statement.setString(8, album.getArtist().getID());
+        else statement.setString(8, null);
         statement.setString(9, null);
         statement.executeUpdate();
         //System.out.println(album.getArtist().getClass());
@@ -271,6 +272,7 @@ public class Database{
     }
     
     public static ArrayList<Release> ReadReleases() throws SQLException{
+        Init();
         Statement statement=connection.createStatement();
         ResultSet results=statement.executeQuery("select * from RELEASES");
         ArrayList<Release> releases=new ArrayList();
