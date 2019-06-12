@@ -19,9 +19,7 @@ public class Compilation extends Release{
             System.out.println(System.lineSeparator() + "Artists: ");
              Artists.toString();
         }
-        //System.out.println();
-        //return super.toString() + "{" + Artists.toString() + '}';
-        return null;
+        return super.toString() + "{" + Artists.toString() + "}" + "\n";
     }
     
 

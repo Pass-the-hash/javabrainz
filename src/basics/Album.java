@@ -18,8 +18,7 @@ public class Album extends Release{
             System.out.println(System.lineSeparator() + "Artist: ");
             Artist.toString();
         }
-        //return super.toString() + "{" + "Artist=" + Artist + '}';
-        return null;
+        return super.toString() + "{" + "Artist=" + Artist + "}" + "\n";
     }
 
     public Artist getArtist(){

@@ -28,8 +28,7 @@ public class Release{
         if (TrackCount>=0) System.out.println("Track count: " + TrackCount);
         if (Format!=null){System.out.print("Formats: "); for (int i=0; i<Format.length; i++) if (Format[i]!=null) System.out.print(Format[i] + " "); System.out.println();}
         if (ReleaseDate!=null) System.out.println("Release date: " + ReleaseDate);
-        //return "{" + "Title=" + Title + ", Language=" + Language + ", Status=" + Status + ", Format=" + Arrays.toString(Format) + ", ReleaseDate=" + ReleaseDate + '}';
-        return null;
+        return "{" + "Title=" + Title + ", Language=" + Language + ", Status=" + Status + ", Format=" + Arrays.toString(Format) + ", ReleaseDate=" + ReleaseDate + "}" + "\n";
     }
 
     public String getID() {

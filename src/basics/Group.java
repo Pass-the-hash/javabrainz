@@ -33,8 +33,7 @@ public class Group extends Artist {
         if (Tags!=null && !Tags.isEmpty()) System.out.println("Tags: " + Tags.toString());
         if (Members!=null && !Members.isEmpty())System.out.println("Members: " + Members.toString());
         System.out.println();
-        //return "{" + "Name=" + Name + ", Country=" + Country + ", Gender=" + Gender + ", Cities=" + Arrays.toString(Cities) + ", BirthDate=" + BirthDate + ", DeathDate=" + DeathDate + ", Aliases=" + Aliases.toString() + ", Tags=" + Tags.toString() + '}';
-        return null;
+        return super.toString() + "{" + ", BeginDate=" + BeginDate + ", EndDate=" + EndDate + ", Members=" + Members.toString() + "}" + "\n";
     }
    
     public LocalDate getBeginDate() {

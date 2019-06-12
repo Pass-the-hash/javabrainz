@@ -4,11 +4,8 @@ import java.util.LinkedList;
 
 public abstract class Artist {      // Αφηρημένη κλάση, την οποία κληρονομούν οι κλάσεις Person και Group.
     protected String Name, Country, ID, Cities;
-    private String type;
     //protected String[] Cities;
     protected LinkedList<String> Aliases, Tags;
-    
-    //public Artist(){}
     
     public Artist(String Name, String Country, String Cities, LinkedList<String> Aliases, LinkedList<String> Tags, String ID){
         this.Name = Name;
@@ -17,6 +14,11 @@ public abstract class Artist {      // Αφηρημένη κλάση, την ο�
         this.Aliases = Aliases;
         this.Tags = Tags;
         this.ID=ID;
+    }
+
+    @Override
+    public String toString() {
+        return "Artist{" + "Name=" + Name + ", Country=" + Country + ", ID=" + ID + ", Cities=" + Cities  + ", Aliases=" + Aliases + ", Tags=" + Tags + '}';
     }
 
 
@@ -67,15 +69,5 @@ public abstract class Artist {      // Αφηρημένη κλάση, την ο�
     public void setTags(LinkedList<String> Tags) {
         this.Tags = Tags;
     }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-    
-    
     
 }

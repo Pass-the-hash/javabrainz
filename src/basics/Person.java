@@ -8,8 +8,6 @@ public class Person extends Artist {
     String Gender;
     private LocalDate BirthDate, DeathDate;
     
-    //public Person(){}
-    
     public Person(String Gender, String Name, String Country, String Cities, LocalDate BirthDate, LocalDate DeathDate, LinkedList<String> Aliases, LinkedList<String> Tags, String ID){
         super(Name, Country, Cities, Aliases, Tags, ID);
         this.BirthDate=BirthDate;
@@ -37,8 +35,8 @@ public class Person extends Artist {
         if (Aliases!=null && !Aliases.isEmpty()) System.out.println("Aliases: " + Aliases.toString());
         if (Tags!=null && !Tags.isEmpty()) System.out.println("Tags: " + Tags.toString());
         System.out.println();
-        //return "{" + "Name=" + Name + ", Country=" + Country + ", Gender=" + Gender + ", Cities=" + Arrays.toString(Cities) + ", BirthDate=" + BirthDate + ", DeathDate=" + DeathDate + ", Aliases=" + Aliases.toString() + ", Tags=" + Tags.toString() + '}';
-        return null;
+        return super.toString() + "{" + ", Gender=" + Gender +  ", BirthDate=" + BirthDate + ", DeathDate=" + DeathDate + "}" + "\n";
+        //return null;
     }
 
     public String getGender() {
