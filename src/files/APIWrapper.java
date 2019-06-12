@@ -76,7 +76,6 @@ public class APIWrapper {
         LinkedList<String> alias, tag;
         ArrayList artists=new ArrayList();
         Person person; Group group;
-        int requests=0;
         for (int i=0; i<ids.size(); i++){
             if (types.get(i)==null) continue;
             alias=new LinkedList(); tag=new LinkedList();
@@ -130,7 +129,7 @@ public class APIWrapper {
     private static ArrayList<Album> getAlbums(String u) throws IOException, InterruptedException{
         String response = Request.getResponse(u);
         ArrayList albums=new ArrayList();
-        ArrayList<Artist> artists=new ArrayList();
+        ArrayList<Artist> artists;
         
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         List<String> titles=JsonPath.read(response, "$.release-groups[*].title"), ids=JsonPath.read(response, "$.release-groups[*].id"), artist_ids=JsonPath.using(conf).parse(response).read("$.release-groups[*].artist-credit[0].artist.id");;
@@ -138,13 +137,11 @@ public class APIWrapper {
         
         for (int i=0; i<ids.size(); i++){
             if (compilations.get(i)!=null) continue;
-            //for(int i=0; i<artist){
             if (artist_ids.get(i)!=null && i<artist_ids.size()){
                 Request.sleep(1500);
                 artists = APIWrapper.getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + artist_ids.get(i) + "&fmt=json");
                 if (!artists.isEmpty()) albums.add(new Album(artists.get(0), titles.get(i), null, ids.get(i)));
             }
-            //}
            albums.add(new Album(null, titles.get(i), null, ids.get(i)));
         }
         return albums;
@@ -154,18 +151,17 @@ public class APIWrapper {
         String response = Request.getResponse(u);
         ArrayList<Compilation> compilations=new ArrayList();
         ArrayList<Artist> artists=new ArrayList();
-        ArrayList<Artist> tmp;
+        ArrayList<Artist> tmp=new ArrayList();
         
         Configuration conf=Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
         List<String> titles=JsonPath.read(response, "$.release-groups[*].title"), ids=JsonPath.read(response, "$.release-groups[*].id"), artist_ids;
         
         for (int i=0; i<ids.size(); i++){
             artist_ids=JsonPath.using(conf).parse(response).read("$.release-groups["+i+"].artist-credit[*].artist.id");
-            //System.out.println(i);
             
-            if (artist_ids.get(i)!=null){
+            if (artist_ids!=null){
                 Request.sleep(1500);
-                tmp=getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + artist_ids.get(i) + "&fmt=json");
+                for (String j:artist_ids) tmp=getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + j + "&fmt=json");
                 for (Artist obj:tmp){
                     artists.add(obj);
                 }
