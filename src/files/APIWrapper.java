@@ -160,7 +160,7 @@ public class APIWrapper {
             artist_ids=JsonPath.using(conf).parse(response).read("$.release-groups["+i+"].artist-credit[*].artist.id");
             
             if (artist_ids!=null){
-                Request.sleep(1500);
+                Request.sleep(2000);
                 for (String j:artist_ids) tmp=getArtists("http://musicbrainz.org/ws/2/artist/?query=arid:" + j + "&fmt=json");
                 for (Artist obj:tmp){
                     artists.add(obj);
