@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.event.WindowEvent;
+
 public class NotInDatabase extends javax.swing.JFrame {
   
     public NotInDatabase() {
@@ -18,9 +20,14 @@ public class NotInDatabase extends javax.swing.JFrame {
         yesButton = new javax.swing.JButton();
         noButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(java.awt.Color.lightGray);
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel1MouseClicked(evt);
+            }
+        });
         jPanel1.setLayout(null);
         jPanel1.add(jLabel1);
         jLabel1.setBounds(190, 10, 300, 50);
@@ -28,7 +35,7 @@ public class NotInDatabase extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("No results found. Would you like to add entries from API?");
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(200, 110, 430, 90);
+        jLabel2.setBounds(140, 110, 430, 90);
         jPanel1.add(jLabel4);
         jLabel4.setBounds(20, 100, 0, 0);
         jPanel1.add(jLabel3);
@@ -43,7 +50,7 @@ public class NotInDatabase extends javax.swing.JFrame {
             }
         });
         jPanel1.add(yesButton);
-        yesButton.setBounds(260, 200, 90, 50);
+        yesButton.setBounds(160, 200, 90, 50);
 
         noButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         noButton.setText("No");
@@ -53,13 +60,13 @@ public class NotInDatabase extends javax.swing.JFrame {
             }
         });
         jPanel1.add(noButton);
-        noButton.setBounds(380, 200, 90, 50);
+        noButton.setBounds(390, 200, 90, 50);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -76,9 +83,22 @@ public class NotInDatabase extends javax.swing.JFrame {
     }//GEN-LAST:event_yesButtonActionPerformed
 
     private void noButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_noButtonMouseClicked
-        System.exit(0);
+        this.dispose();
     }//GEN-LAST:event_noButtonMouseClicked
 
+    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel1MouseClicked
+
+   
+    public void windowClosing(WindowEvent e) {
+        //JFrame f = (JFrame) e.getWindow();
+        if (this.getState() != NotInDatabase.ICONIFIED) {
+            this.setState(this.ICONIFIED);
+        } else {
+            this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+        }
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

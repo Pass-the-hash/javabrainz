@@ -27,7 +27,7 @@ public class DB extends javax.swing.JFrame {
         jList1 = new javax.swing.JList<>();
         databaseSearchButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel2.setBackground(java.awt.Color.lightGray);
         jPanel2.setLayout(null);
@@ -85,7 +85,7 @@ public class DB extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
         );
 
         pack();
@@ -93,58 +93,52 @@ public class DB extends javax.swing.JFrame {
 
     private void databaseSearchButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_databaseSearchButtonMouseClicked
         ArrayList<String> results=new ArrayList();
+        
         if (jList1.getSelectedValue().equals("Artists")){
             try {
-                artists=Database.ReadArtists();
-                for (int i=0; i<artists.size(); i++){
-                    if (artists.get(i).getName().equals(jTextField1.getText())) results.add(artists.get(i).toString());
-                }
+                artists=Database.ReadArtists(jTextField1.getText());
+                /*for (int i=0; i<artists.size(); i++){
+                    if (!artists.get(i).getName().contains()) artists.remove(i);
+                }*/
             } catch (SQLException ex) {
                 Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList1.getSelectedValue().equals("Releases")){
             try {
-                releases=Database.ReadReleases();
-                for (int i=0; i<releases.size(); i++){
-                    if (releases.get(i).getTitle().equals(jTextField1.getText())) results.add(releases.get(i).toString());
-                }
+                releases=Database.ReadReleases(jTextField1.getText());
+                /*for (int i=0; i<releases.size(); i++){
+                    if (!(releases.get(i).getTitle().contains()) && releases.get(i).getTrackCount()==-1) releases.remove(i);
+                }*/
             } catch (SQLException ex) {
                 Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList1.getSelectedValue().equals("Albums")){
             try {
-                albums=Database.ReadAlbums();
-                for (int i=0; i<albums.size(); i++){
-                    if (albums.get(i).getTitle().equals(jTextField1.getText())) results.add(albums.get(i).toString());
-                }
+                albums=Database.ReadAlbums(jTextField1.getText());
+                System.out.println(albums.size());
+                /*for (int i=0; i<albums.size(); i++){
+                    if (!albums.get(i).getTitle().contains()) albums.remove(i);
+                }*/
             } catch (SQLException ex) {
                 Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList1.getSelectedValue().equals("Compilations")){
             try {
-                compilations=Database.ReadCompilations();
-                for (int i=0; i<compilations.size(); i++){
-                    if (compilations.get(i).getTitle().equals(jTextField1.getText())) results.add(compilations.get(i).toString());
-                }
+                compilations=Database.ReadCompilations(jTextField1.getText());
+                /*for (int i=0; i<compilations.size(); i++){
+                    if (!compilations.get(i).getTitle().contains()) compilations.remove(i);
+                }*/
             } catch (SQLException ex) {
                 Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
-        NotInDatabase nodb;
-        
-        /*if (!artists.isEmpty()){
-            Details.ContinueWithArtists(artists);
-        }else if (releases.isEmpty()){
-            Details.ContinueWithReleases(releases);
-        }else if (albums.isEmpty()){
-            Details.ContinueWithAlbums(albums);
-        }else if (compilations.isEmpty()){
-            Details.ContinueWithCompilations(compilations);
-        }*/
-        if (!results.isEmpty()) Details.ShowDB(results);
+        if (artists!=null) ArtistDetails.ContinueWithArtists(artists);
+        else if (releases!=null) ReleaseDetails.ContinueWithReleases(releases);
+        else if (albums!=null) AlbumDetails.ContinueWithAlbums(albums);
+        else if (compilations!=null) AlbumDetails.ContinueWithCompilations(compilations);
         else{
-            nodb=new NotInDatabase();
+            NotInDatabase nodb=new NotInDatabase();
             nodb.setVisible(true);
         }
 }//GEN-LAST:event_databaseSearchButtonMouseClicked
@@ -188,9 +182,9 @@ public class DB extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
-    private ArrayList<Artist> artists;
-    private ArrayList<Release> releases;
-    private ArrayList<Album> albums;
-    private ArrayList<Compilation> compilations;
     // End of variables declaration//GEN-END:variables
+    private static ArrayList<Artist> artists;
+    private static ArrayList<Release> releases;
+    private static ArrayList<Album> albums;
+    private static ArrayList<Compilation> compilations;
 }

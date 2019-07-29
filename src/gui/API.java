@@ -30,7 +30,7 @@ public class API extends javax.swing.JFrame {
         jList1 = new javax.swing.JList<>();
         apiSearchButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(java.awt.Color.white);
 
         jPanel1.setBackground(java.awt.Color.white);
@@ -136,28 +136,28 @@ public class API extends javax.swing.JFrame {
                 //ProgressBar.setValue(10);
                 artists=APIWrapper.getArtistsWithName(queryText.getText());
                 //ProgressBar.setMaximum(WIDTH);
-                Details.ContinueWithArtists(artists);
+                ArtistDetails.ContinueWithArtists(artists);
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList.getSelectedValue().equals("Releases")){
             if (jList1.getSelectedValue().equals("Name")) try {
                 releases=APIWrapper.getReleasesWithName(queryText.getText());
-                Details.ContinueWithReleases(releases);
+                ReleaseDetails.ContinueWithReleases(releases);
             } catch (IOException ex) {
                 Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList.getSelectedValue().equals("Albums")){
             if (jList1.getSelectedValue().equals("Name")) try {
                 albums=APIWrapper.getAlbumsWithName(queryText.getText());
-                Details.ContinueWithAlbums(albums);
+                AlbumDetails.ContinueWithAlbums(albums);
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (jList.getSelectedValue().equals("Compilations")){
             if (jList1.getSelectedValue().equals("Name")) try {
                 compilations=APIWrapper.getCompilationsWithName(queryText.getText());
-                Details.ContinueWithCompilations(compilations);
+                AlbumDetails.ContinueWithCompilations(compilations);
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -169,7 +169,7 @@ public class API extends javax.swing.JFrame {
     }//GEN-LAST:event_jListValueChanged
 
     private void ExitButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_apiSearchButton1MouseClicked
-        System.exit(0);
+        this.dispose();
     }//GEN-LAST:event_apiSearchButton1MouseClicked
 
     public static void main(String args[]) {
